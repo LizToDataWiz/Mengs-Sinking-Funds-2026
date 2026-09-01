@@ -599,8 +599,14 @@ function Contributions({ rows, admin, refresh }: any) {
 }
 function Loans({ rows, admin, finance, refresh, edit }: any) {
   const [filter, setFilter] = useState("all");
-  const visibleRows =
+  const filteredRows =
     filter === "all" ? rows : rows.filter((r: any) => r.type === filter);
+  const visibleRows = [...filteredRows].sort((a: any, b: any) => {
+    const aPaid = String(a.status).toLowerCase() === "paid";
+    const bPaid = String(b.status).toLowerCase() === "paid";
+    if (aPaid !== bPaid) return aPaid ? 1 : -1;
+    return b.date.localeCompare(a.date);
+  });
   return (
     <>
       <div className="table-filters" aria-label="Filter loan records">
@@ -637,7 +643,12 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
           </thead>
           <tbody>
             {visibleRows.map((r: any) => (
-            <tr key={r.id}>
+            <tr
+              key={r.id}
+              className={
+                String(r.status).toLowerCase() === "paid" ? "paid-row" : ""
+              }
+            >
               <td>{r.date}</td>
               <td>
                 <b>{r.member_name}</b>
