@@ -92,8 +92,8 @@ export default function App() {
     py = d.loans
       .filter((x: any) => x.type === "payment")
       .reduce((s: number, x: any) => s + (x.amount || 0), 0),
-    interestCollected = d.loans
-      .filter((x: any) => x.type === "loan" && x.status === "paid")
+    totalInterest = d.loans
+      .filter((x: any) => x.type === "loan")
       .reduce((s: number, x: any) => s + (x.interest || 0), 0),
     outstandingLoans = d.loans
       .filter((x: any) => x.type === "loan" && x.status !== "paid")
@@ -221,7 +221,7 @@ export default function App() {
               <Stat
                 icon={<BadgePercent />}
                 label="Total Interest"
-                value={peso(interestCollected)}
+                value={peso(totalInterest)}
                 tone="purple"
               />
               <Stat
