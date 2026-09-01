@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownToLine,
   ArrowUpRight,
-  ChartNoAxesCombined,
+  BadgePercent,
+  CircleDollarSign,
   HandCoins,
   Landmark,
   LayoutDashboard,
@@ -91,6 +92,15 @@ export default function App() {
     py = d.loans
       .filter((x: any) => x.type === "payment")
       .reduce((s: number, x: any) => s + (x.amount || 0), 0),
+    interestCollected = d.loans
+      .filter((x: any) => x.type === "loan" && x.status === "paid")
+      .reduce((s: number, x: any) => s + (x.interest || 0), 0),
+    outstandingLoans = d.loans
+      .filter((x: any) => x.type === "loan" && x.status !== "paid")
+      .reduce(
+        (s: number, x: any) => s + (x.principal || 0) + (x.interest || 0),
+        0,
+      ),
     fund = tc - pl + py;
   const submit = async (e: any) => {
     e.preventDefault();
@@ -209,10 +219,16 @@ export default function App() {
                 tone="orange"
               />
               <Stat
-                icon={<ChartNoAxesCombined />}
-                label="Bank balance"
-                value={peso(d.bankBalance)}
+                icon={<BadgePercent />}
+                label="Interest collected"
+                value={peso(interestCollected)}
                 tone="purple"
+              />
+              <Stat
+                icon={<CircleDollarSign />}
+                label="Outstanding loans"
+                value={peso(outstandingLoans)}
+                tone="red"
               />
             </section>
             <section className="grid">
