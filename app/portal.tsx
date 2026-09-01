@@ -8,9 +8,11 @@ import {
   Landmark,
   LayoutDashboard,
   LogOut,
+  Pencil,
   Plus,
   ReceiptText,
   ShieldCheck,
+  Trash2,
   Users,
 } from "lucide-react";
 const peso = (n: number) =>
@@ -607,11 +609,22 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
               <td>{r.dueDate || "—"}</td>
               <td>{r.status}</td>
               {finance && (
-                <td>
-                  <button onClick={() => edit(r)}>Edit</button>
+                <td className="row-actions">
+                  <button
+                    className="icon-action edit-action"
+                    type="button"
+                    title="Edit transaction"
+                    aria-label={`Edit ${r.member_name} ${r.type}`}
+                    onClick={() => edit(r)}
+                  >
+                    <Pencil aria-hidden="true" />
+                  </button>
                   {admin && (
                     <button
-                      className="danger"
+                      className="icon-action delete-action"
+                      type="button"
+                      title="Delete transaction"
+                      aria-label={`Delete ${r.member_name} ${r.type}`}
                       onClick={async () =>
                         refresh(
                           await api({
@@ -622,7 +635,7 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
                         )
                       }
                     >
-                      Delete
+                      <Trash2 aria-hidden="true" />
                     </button>
                   )}
                 </td>
