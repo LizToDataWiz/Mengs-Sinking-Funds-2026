@@ -576,15 +576,19 @@ function Contributions({ rows, admin, refresh }: any) {
                 <td>
                   <button
                     className="danger"
-                    onClick={async () =>
+                    onClick={async () => {
+                      const confirmed = window.confirm(
+                        `Delete ${r.member_name}'s contribution of ${peso(r.amount)}? This cannot be undone.`,
+                      );
+                      if (!confirmed) return;
                       refresh(
                         await api({
                           action: "delete",
                           kind: "contribution",
                           id: r.id,
                         }),
-                      )
-                    }
+                      );
+                    }}
                   >
                     Delete
                   </button>
@@ -681,15 +685,19 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
                       type="button"
                       title="Delete transaction"
                       aria-label={`Delete ${r.member_name} ${r.type}`}
-                      onClick={async () =>
+                      onClick={async () => {
+                        const confirmed = window.confirm(
+                          `Delete ${r.member_name}'s ${r.type} transaction? This cannot be undone.`,
+                        );
+                        if (!confirmed) return;
                         refresh(
                           await api({
                             action: "delete",
                             kind: "loan",
                             id: r.id,
                           }),
-                        )
-                      }
+                        );
+                      }}
                     >
                       <Trash2 aria-hidden="true" />
                     </button>
