@@ -646,7 +646,10 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
             <tr
               key={r.id}
               className={
-                String(r.status).toLowerCase() === "paid" ? "paid-row" : ""
+                r.type === "loan" &&
+                String(r.status).toLowerCase() === "paid"
+                  ? "paid-row"
+                  : ""
               }
             >
               <td>{r.date}</td>
