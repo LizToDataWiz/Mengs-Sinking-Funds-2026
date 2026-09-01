@@ -3,12 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownToLine,
   ArrowUpRight,
+  ChartNoAxesCombined,
+  HandCoins,
   Landmark,
+  LayoutDashboard,
   LogOut,
   Plus,
+  ReceiptText,
   ShieldCheck,
   Users,
-  WalletCards,
 } from "lucide-react";
 const peso = (n: number) =>
   new Intl.NumberFormat("en-PH", {
@@ -111,17 +114,22 @@ export default function App() {
         <Brand />
         <nav>
           {[
-            ["overview", "Overview"],
-            ["contributions", "Contributions"],
-            ["loans", "Loans & payments"],
-            ["members", "Members"],
+            { id: "overview", label: "Overview", icon: <LayoutDashboard /> },
+            {
+              id: "contributions",
+              label: "Contributions",
+              icon: <ReceiptText />,
+            },
+            { id: "loans", label: "Loans", icon: <HandCoins /> },
+            { id: "members", label: "Members", icon: <Users /> },
           ].map((x) => (
             <button
-              key={x[0]}
-              className={tab === x[0] ? "active" : ""}
-              onClick={() => setTab(x[0])}
+              key={x.id}
+              className={tab === x.id ? "active" : ""}
+              onClick={() => setTab(x.id)}
             >
-              {x[1]}
+              {x.icon}
+              <span>{x.label}</span>
             </button>
           ))}
         </nav>
@@ -179,7 +187,7 @@ export default function App() {
         {error && <div className="error">{error}</div>}
         {tab === "overview" && (
           <>
-            <section className="stats">
+            <section className="stats" aria-label="Fund summary">
               <Stat
                 icon={<Landmark />}
                 label="Fund balance"
@@ -199,7 +207,7 @@ export default function App() {
                 tone="orange"
               />
               <Stat
-                icon={<WalletCards />}
+                icon={<ChartNoAxesCombined />}
                 label="Bank balance"
                 value={peso(d.bankBalance)}
                 tone="purple"
