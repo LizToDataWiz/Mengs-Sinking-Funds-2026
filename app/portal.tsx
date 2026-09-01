@@ -649,83 +649,173 @@ function Activity({ rows }: any) {
 function Members({ rows, admin, refresh }: any) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [pinModal, setPinModal] = useState(false);
+  const [pinForm, setPinForm] = useState({
+    currentPin: "",
+    newPin: "",
+    confirmPin: "",
+  });
   return (
-    <form
-      className="membermanager"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setBusy(true);
-        setMessage("");
-        const fd = new FormData(e.currentTarget);
-        const updates = rows.map((m: any) => ({
-          memberId: m.id,
-          email: fd.get(`email-${m.id}`),
-          pin: fd.get(`pin-${m.id}`),
-          role: fd.get(`role-${m.id}`),
-          active: fd.get(`active-${m.id}`) === "on",
-        }));
-        try {
-          refresh(await api({ action: "save_members", updates }));
-          setMessage("Member changes saved.");
-        } catch (error: any) {
-          setMessage(error.message);
-        } finally {
-          setBusy(false);
-        }
-      }}
-    >
-      <div className="panelhead">
-        <div>
-          <h2>Registered members</h2>
-          <p>Only members with an email and PIN can sign in.</p>
-        </div>
-        {admin && (
-          <button className="primary" disabled={busy}>
-            {busy ? "Saving…" : "Save changes"}
-          </button>
-        )}
-      </div>
-      {message && <div className="save-message">{message}</div>}
-      <div className="membercards">
-        {rows.map((m: any) => (
-          <div className="memberrow" key={m.id}>
-            <div className="avatar">{m.name[0]}</div>
-            <div className="membername">
-              <b>{m.name}</b>
-              <small>{m.email || "Not registered yet"}</small>
-            </div>
+    <>
+      <form
+        className="membermanager"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setBusy(true);
+          setMessage("");
+          const fd = new FormData(e.currentTarget);
+          const updates = rows.map((m: any) => ({
+            memberId: m.id,
+            email: fd.get(`email-${m.id}`),
+            pin: fd.get(`pin-${m.id}`),
+            role: fd.get(`role-${m.id}`),
+            active: fd.get(`active-${m.id}`) === "on",
+          }));
+          try {
+            refresh(await api({ action: "save_members", updates }));
+            setMessage("Member changes saved. Existing PINs were kept.");
+          } catch (error: any) {
+            setMessage(error.message);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <div className="panelhead">
+          <div>
+            <h2>Registered members</h2>
+            <p>
+              {admin
+                ? "Leave a PIN blank to keep the current PIN."
+                : "Member accounts and access status."}
+            </p>
+          </div>
+          <div className="member-actions">
+            <button type="button" onClick={() => setPinModal(true)}>
+              Change my PIN
+            </button>
             {admin && (
-              <>
-                <input
-                  name={`email-${m.id}`}
-                  type="email"
-                  defaultValue={m.email || ""}
-                  placeholder="Member email"
-                />
-                <input
-                  name={`pin-${m.id}`}
-                  inputMode="numeric"
-                  minLength={4}
-                  placeholder="New PIN"
-                />
-                <select name={`role-${m.id}`} defaultValue={m.role}>
-                  <option value="member">Member</option>
-                  <option value="treasurer">Treasurer</option>
-                  <option value="admin">Admin</option>
-                </select>
-                <label className="check">
-                  <input
-                    name={`active-${m.id}`}
-                    type="checkbox"
-                    defaultChecked={m.active}
-                  />{" "}
-                  Active
-                </label>
-              </>
+              <button className="primary" disabled={busy}>
+                {busy ? "Saving…" : "Save changes"}
+              </button>
             )}
           </div>
-        ))}
-      </div>
-    </form>
+        </div>
+        {message && <div className="save-message">{message}</div>}
+        <div className="membercards">
+          {rows.map((m: any) => (
+            <div className="memberrow" key={m.id}>
+              <div className="avatar">{m.name[0]}</div>
+              <div className="membername">
+                <b>{m.name}</b>
+                <small>{m.email || "Not registered yet"}</small>
+              </div>
+              {admin && (
+                <>
+                  <input
+                    name={`email-${m.id}`}
+                    type="email"
+                    defaultValue={m.email || ""}
+                    placeholder="Member email"
+                  />
+                  <input
+                    name={`pin-${m.id}`}
+                    inputMode="numeric"
+                    minLength={4}
+                    placeholder="Initial / reset PIN"
+                  />
+                  <select name={`role-${m.id}`} defaultValue={m.role}>
+                    <option value="member">Member</option>
+                    <option value="treasurer">Treasurer</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <label className="check">
+                    <input
+                      name={`active-${m.id}`}
+                      type="checkbox"
+                      defaultChecked={m.active}
+                    />{" "}
+                    Active
+                  </label>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </form>
+      {pinModal && (
+        <div className="backdrop" onMouseDown={() => setPinModal(false)}>
+          <form
+            className="modal"
+            onMouseDown={(e) => e.stopPropagation()}
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setMessage("");
+              if (pinForm.newPin !== pinForm.confirmPin) {
+                setMessage("The new PINs do not match.");
+                setPinModal(false);
+                return;
+              }
+              try {
+                refresh(await api({ action: "change_pin", ...pinForm }));
+                setPinForm({ currentPin: "", newPin: "", confirmPin: "" });
+                setPinModal(false);
+                setMessage("Your PIN was changed successfully.");
+              } catch (error: any) {
+                setMessage(error.message);
+                setPinModal(false);
+              }
+            }}
+          >
+            <h2>Change my PIN</h2>
+            <label>
+              Current PIN
+              <input
+                type="password"
+                inputMode="numeric"
+                required
+                minLength={4}
+                value={pinForm.currentPin}
+                onChange={(e) =>
+                  setPinForm({ ...pinForm, currentPin: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              New PIN
+              <input
+                type="password"
+                inputMode="numeric"
+                required
+                minLength={4}
+                value={pinForm.newPin}
+                onChange={(e) =>
+                  setPinForm({ ...pinForm, newPin: e.target.value })
+                }
+              />
+            </label>
+            <label>
+              Confirm new PIN
+              <input
+                type="password"
+                inputMode="numeric"
+                required
+                minLength={4}
+                value={pinForm.confirmPin}
+                onChange={(e) =>
+                  setPinForm({ ...pinForm, confirmPin: e.target.value })
+                }
+              />
+            </label>
+            <div className="actions">
+              <button type="button" onClick={() => setPinModal(false)}>
+                Cancel
+              </button>
+              <button className="primary">Update PIN</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
   );
 }

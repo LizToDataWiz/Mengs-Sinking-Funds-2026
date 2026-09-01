@@ -453,6 +453,19 @@ td strong {
   color: #177857;
   font-size: 13px;
 }
+.member-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.member-actions > button:not(.primary) {
+  border: 1px solid #cbd5e3;
+  background: #fff;
+  border-radius: 10px;
+  padding: 11px 15px;
+  color: #31415a;
+  cursor: pointer;
+}
 .membercards {
   padding: 0 20px 20px;
 }
@@ -669,6 +682,14 @@ td strong {
   }
 }
 @media (max-width: 560px) {
+  .membermanager .panelhead {
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .member-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .stats {
     grid-template-columns: 1fr;
   }

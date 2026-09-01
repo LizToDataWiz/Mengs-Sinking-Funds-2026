@@ -96,7 +96,22 @@ export async function POST(req: NextRequest) {
     const user = await currentUser();
     if (!user) return bad("Please sign in again.", 401);
     const finance = user.role === "admin" || user.role === "treasurer";
-    if (b.action === "save_member" || b.action === "save_members") {
+    if (b.action === "change_pin") {
+      const currentPin = String(b.currentPin || "");
+      const newPin = String(b.newPin || "");
+      if (!/^\d{4,10}$/.test(newPin))
+        return bad("Use a PIN containing 4 to 10 numbers.");
+      if (!user.email) return bad("Your account does not have an email.");
+      const member = (
+        await db.select().from(members).where(eq(members.id, user.id)).limit(1)
+      )[0];
+      if (!member || member.pinHash !== (await hashPin(user.email, currentPin)))
+        return bad("Your current PIN is incorrect.", 401);
+      await db
+        .update(members)
+        .set({ pinHash: await hashPin(user.email, newPin) })
+        .where(eq(members.id, user.id));
+    } else if (b.action === "save_member" || b.action === "save_members") {
       if (user.role !== "admin")
         return bad("Only the admin can manage members.", 403);
       const updates =
@@ -109,6 +124,15 @@ export async function POST(req: NextRequest) {
               .trim()
               .toLowerCase() || null,
           pin = String(item.pin || "");
+        const existing = (
+          await db
+            .select({ email: members.email })
+            .from(members)
+            .where(eq(members.id, Number(item.memberId)))
+            .limit(1)
+        )[0];
+        if (existing?.email !== email && !pin)
+          return bad("Enter a PIN when changing a member's email.");
         const update: any = {
           email,
           role: ["admin", "treasurer", "member"].includes(item.role)
