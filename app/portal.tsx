@@ -4,6 +4,7 @@ import {
   ArrowDownToLine,
   ArrowUpRight,
   BadgePercent,
+  Cat,
   CircleDollarSign,
   HandCoins,
   Landmark,
@@ -411,7 +412,9 @@ export default function App() {
 function Brand() {
   return (
     <div className="brand">
-      <span className="mark">M</span>
+      <span className="mark" aria-hidden="true">
+        <Cat />
+      </span>
       <div>
         <strong>Mengs</strong>
         <small>Sinking Fund</small>

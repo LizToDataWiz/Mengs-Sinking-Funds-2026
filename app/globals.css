@@ -138,9 +138,12 @@ select {
   border-radius: 13px;
   background: linear-gradient(145deg, #1760dc, #0f439f);
   color: white;
-  font-weight: 800;
-  font-size: 22px;
   box-shadow: 0 8px 20px #174ab638;
+}
+.mark svg {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.9;
 }
 .brand div {
   display: flex;
