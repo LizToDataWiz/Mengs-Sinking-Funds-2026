@@ -220,7 +220,7 @@ export default function App() {
               />
               <Stat
                 icon={<BadgePercent />}
-                label="Interest collected"
+                label="Total Interest"
                 value={peso(interestCollected)}
                 tone="purple"
               />
