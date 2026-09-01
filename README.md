@@ -2,21 +2,21 @@
 
 A private, mobile-friendly member portal for tracking contributions, loans, repayments, interest shares, and the overall fund balance.
 
-## Access
+## Roles
 
-- Registered members can sign in with their email and private PIN.
-- Members can view the complete fund history and member summaries.
-- Administrators can register members, add transactions, and maintain records.
+- **Admin:** registers members, assigns email/PIN access, and manages roles.
+- **Treasurer:** adds contributions and loans, edits loan details, and records repayments.
+- **Member:** read-only access to the live fund standing and transaction history.
 
 ## Technology
 
-Built with Next.js/Vinext, React, TypeScript, Cloudflare Workers, and D1.
+Built with Next.js, React, TypeScript, Drizzle ORM, Neon Postgres, and Vercel.
 
 ## Development
 
 ```bash
-npm run install:ci
+npm install
 npm run build
 ```
 
-The deployed database is managed through the D1 binding declared in `.openai/hosting.json`.
+The app expects a `DATABASE_URL` environment variable. Database migrations are stored in `drizzle/`.
