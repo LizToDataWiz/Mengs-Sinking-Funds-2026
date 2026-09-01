@@ -244,7 +244,7 @@ select {
 }
 .stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0;
   margin-bottom: 20px;
   padding: 8px;
@@ -265,6 +265,32 @@ select {
   color: white;
 }
 .stat:last-child { border-right: 0; }
+.stat:first-child {
+  grid-column: span 2;
+  margin: -1px 0 -1px -1px;
+  padding-left: 22px;
+  border: 1px solid #ffffff38;
+  border-radius: 17px;
+  background: #102f80aa;
+  box-shadow: inset 0 1px 0 #ffffff24, 0 9px 24px #0b2b7338;
+}
+.stat:first-child i {
+  width: 50px;
+  height: 50px;
+  background: #ffffff26;
+}
+.stat:first-child i svg {
+  width: 24px;
+  height: 24px;
+}
+.stat:first-child span {
+  color: #edf3ff;
+  font-weight: 700;
+}
+.stat:first-child strong {
+  font-size: 27px;
+  letter-spacing: -0.03em;
+}
 .stat i {
   width: 45px;
   height: 45px;
@@ -688,12 +714,16 @@ td strong {
   .stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  .stat:nth-child(2) { border-right: 0; }
-  .stat:nth-child(3) { border-right: 1px solid #ffffff24; }
-  .stat:last-child {
+  .stat:first-child {
     grid-column: 1 / -1;
-    border-top: 1px solid #ffffff24;
+    margin: -1px -1px 0;
+    border-right: 1px solid #ffffff38;
   }
+  .stat:nth-child(2),
+  .stat:nth-child(4) { border-right: 1px solid #ffffff24; }
+  .stat:nth-child(3),
+  .stat:nth-child(5) { border-right: 0; }
+  .stat:last-child { grid-column: auto; }
   .grid {
     grid-template-columns: 1fr;
   }
@@ -743,12 +773,19 @@ td strong {
     border-right: 0;
     border-bottom: 1px solid #ffffff24;
   }
-  .stat:nth-child(odd) { border-right: 1px solid #ffffff24; }
-  .stat:nth-child(even) { border-right: 0; }
-  .stat:nth-child(n+3) { border-bottom: 0; }
-  .stat:last-child {
+  .stat:nth-child(even) { border-right: 1px solid #ffffff24; }
+  .stat:nth-child(odd) { border-right: 0; }
+  .stat:nth-child(n+4) { border-bottom: 0; }
+  .stat:first-child {
     grid-column: 1 / -1;
-    border-top: 1px solid #ffffff24;
+    padding: 18px 16px;
+    border-right: 1px solid #ffffff38;
+    border-bottom: 1px solid #ffffff38;
+  }
+  .stat:first-child strong { font-size: 24px; }
+  .stat:last-child {
+    grid-column: auto;
+    border-top: 0;
     border-right: 0;
   }
   .stat i { width: 36px; height: 36px; }
