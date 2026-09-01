@@ -12,6 +12,50 @@ import { ensureSeeded } from "@/lib/seed";
 export const dynamic = "force-dynamic";
 const bad = (error: string, status = 400) =>
   NextResponse.json({ error }, { status });
+function calculateStatuses(rows: any[]) {
+  const paymentsByMember = new Map<number, number>();
+  const loansByMember = new Map<number, any[]>();
+
+  for (const row of rows) {
+    if (row.type === "payment") {
+      paymentsByMember.set(
+        row.memberId,
+        (paymentsByMember.get(row.memberId) || 0) + Number(row.amount || 0),
+      );
+    } else if (row.type === "loan") {
+      const memberLoans = loansByMember.get(row.memberId) || [];
+      memberLoans.push(row);
+      loansByMember.set(row.memberId, memberLoans);
+    }
+  }
+
+  const automaticallyPaid = new Set<number>();
+  for (const [memberId, memberLoans] of loansByMember) {
+    let availablePayments = paymentsByMember.get(memberId) || 0;
+    memberLoans.sort(
+      (a, b) => a.date.localeCompare(b.date) || Number(a.id) - Number(b.id),
+    );
+    for (const loan of memberLoans) {
+      const amountDue = Number(loan.amount || 0);
+      if (availablePayments + 0.005 >= amountDue) {
+        automaticallyPaid.add(loan.id);
+        availablePayments -= amountDue;
+      } else {
+        availablePayments = 0;
+      }
+    }
+  }
+
+  return rows.map((row) => ({
+    ...row,
+    status:
+      row.type === "payment" ||
+      String(row.status).toLowerCase() === "paid" ||
+      automaticallyPaid.has(row.id)
+        ? "paid"
+        : "open",
+  }));
+}
 async function state() {
   const db = getDb(),
     user = await currentUser();
@@ -48,7 +92,7 @@ async function state() {
   return {
     user,
     members: memberRows,
-    loans: loanRows,
+    loans: calculateStatuses(loanRows),
     contributions: contributionRows,
     bankBalance: Number(bank[0]?.value || 0),
   };
@@ -174,7 +218,7 @@ export async function POST(req: NextRequest) {
           interest,
           amount: total,
           dueDate: term ? d.toISOString().slice(0, 10) : null,
-          status: b.status || "open",
+          status: b.type === "payment" ? "paid" : b.status || "open",
           note: b.note || null,
           updatedAt: new Date(),
         };
