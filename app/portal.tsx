@@ -598,23 +598,45 @@ function Contributions({ rows, admin, refresh }: any) {
   );
 }
 function Loans({ rows, admin, finance, refresh, edit }: any) {
+  const [filter, setFilter] = useState("all");
+  const visibleRows =
+    filter === "all" ? rows : rows.filter((r: any) => r.type === filter);
   return (
-    <div className="tablewrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Member</th>
-            <th>Type</th>
-            <th>Principal</th>
-            <th>Interest / amount</th>
-            <th>Due</th>
-            <th>Status</th>
-            {finance && <th />}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r: any) => (
+    <>
+      <div className="table-filters" aria-label="Filter loan records">
+        {[
+          ["all", "All"],
+          ["loan", "Loans"],
+          ["payment", "Payments"],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            className={filter === value ? "active" : ""}
+            aria-pressed={filter === value}
+            onClick={() => setFilter(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Member</th>
+              <th>Type</th>
+              <th>Principal</th>
+              <th>Interest</th>
+              <th>Payment amount</th>
+              <th>Due</th>
+              <th>Status</th>
+              {finance && <th />}
+            </tr>
+          </thead>
+          <tbody>
+            {visibleRows.map((r: any) => (
             <tr key={r.id}>
               <td>{r.date}</td>
               <td>
@@ -624,7 +646,8 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
                 <span className={`pill ${r.type}`}>{r.type}</span>
               </td>
               <td>{r.principal ? peso(r.principal) : "—"}</td>
-              <td>{peso(r.type === "loan" ? r.interest : r.amount)}</td>
+              <td>{r.type === "loan" ? peso(r.interest) : "—"}</td>
+              <td>{r.type === "payment" ? peso(r.amount) : "—"}</td>
               <td>{r.dueDate || "—"}</td>
               <td>{r.status}</td>
               {finance && (
@@ -660,10 +683,11 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
                 </td>
               )}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 function Activity({ rows }: any) {
