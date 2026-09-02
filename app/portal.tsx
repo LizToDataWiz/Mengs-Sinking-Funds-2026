@@ -876,7 +876,13 @@ function Members({ rows, admin, refresh }: any) {
               <div className="avatar">{m.name[0]}</div>
               <div className="membername">
                 <b>{m.name}</b>
-                <small>{m.email || "Not registered yet"}</small>
+                <small className={`member-role ${m.role}`}>
+                  {m.role === "admin"
+                    ? "Admin"
+                    : m.role === "treasurer"
+                      ? "Treasurer"
+                      : "Member"}
+                </small>
               </div>
               {admin && (
                 <>

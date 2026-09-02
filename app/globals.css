@@ -690,6 +690,25 @@ td strong {
   font-size: 12px;
   color: #8591a3;
 }
+.membername .member-role {
+  width: fit-content;
+  margin-top: 3px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #627188;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+.membername .member-role.admin {
+  background: #e8f0ff;
+  color: #2255d6;
+}
+.membername .member-role.treasurer {
+  background: #e7f8f0;
+  color: #177857;
+}
 .membercards input,
 .membercards select,
 .modal input,
