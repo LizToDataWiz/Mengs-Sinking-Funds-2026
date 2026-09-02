@@ -271,18 +271,22 @@ export default function App() {
                   {myOpenLoans.map((loan: any) => (
                     <article key={loan.id}>
                       <p>
-                        You have an outstanding loan amounting to{" "}
+                        Friendly reminder! Your outstanding loan balance is{" "}
                         <strong>
                           {peso((loan.principal || 0) + (loan.interest || 0))}
                         </strong>
                         .{" "}
                         {loan.dueDate ? (
                           <>
-                            Pay on or before{" "}
-                            <strong>{formatDueDate(loan.dueDate)}</strong>. :)
+                            Please settle it by{" "}
+                            <strong>{formatDueDate(loan.dueDate)}</strong>. Thank
+                            you! 😊
                           </>
                         ) : (
-                          <>Please check with the treasurer for the due date. :)</>
+                          <>
+                            Please check with the treasurer for the due date.
+                            Thank you! 😊
+                          </>
                         )}
                       </p>
                     </article>
