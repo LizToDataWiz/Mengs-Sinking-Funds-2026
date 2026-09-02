@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   ArrowDownToLine,
   ArrowUpRight,
@@ -59,16 +59,48 @@ export default function App() {
       .then(setD)
       .catch((e) => setError(e.message));
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!d?.user) return;
 
     // Mobile Safari can keep the focused login field's zoom and scroll position
-    // after React swaps the sign-in screen for the portal.
+    // after React swaps the sign-in screen for the portal. Reset through the
+    // keyboard-closing animation so Safari cannot restore the old position.
     (document.activeElement as HTMLElement | null)?.blur();
-    const resetView = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    const resetView = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      document.scrollingElement?.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    };
     resetView();
-    const frame = window.requestAnimationFrame(resetView);
-    return () => window.cancelAnimationFrame(frame);
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      resetView();
+      secondFrame = window.requestAnimationFrame(resetView);
+    });
+    const timers = [80, 220, 450, 800].map((delay) =>
+      window.setTimeout(resetView, delay),
+    );
+    const viewport = window.visualViewport;
+    viewport?.addEventListener("resize", resetView);
+    const stopWatching = window.setTimeout(
+      () => viewport?.removeEventListener("resize", resetView),
+      1000,
+    );
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      timers.forEach(window.clearTimeout);
+      window.clearTimeout(stopWatching);
+      viewport?.removeEventListener("resize", resetView);
+    };
   }, [d?.user?.id]);
   const summary = useMemo(() => {
     if (!d?.members) return [];

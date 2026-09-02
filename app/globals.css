@@ -101,6 +101,9 @@ body {
   color: #142033;
   font-family: "Nunito", Inter, ui-sans-serif, system-ui, sans-serif;
 }
+.shell {
+  overflow-anchor: none;
+}
 button,
 input,
 select {
