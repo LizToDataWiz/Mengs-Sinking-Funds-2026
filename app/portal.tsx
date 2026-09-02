@@ -31,9 +31,9 @@ function greetingForPhilippineTime() {
       timeZone: "Asia/Manila",
     }).format(new Date()),
   );
-  if (hour >= 5 && hour < 12) return "Maayong Buntag";
-  if (hour >= 12 && hour < 18) return "Maayong Hapon";
-  return "Maayong Gabii";
+  if (hour >= 5 && hour < 12) return "Maayong buntag diha";
+  if (hour >= 12 && hour < 18) return "Maayong hapon diha";
+  return "Maayong gabii diha";
 }
 async function api(body?: any) {
   const r = await fetch(
@@ -183,7 +183,7 @@ export default function App() {
         <div className="title">
           <div>
             <p>2026 FUND</p>
-            <h1>
+            <h1 className={tab === "overview" ? "greeting" : undefined}>
               {tab === "overview"
                 ? `${greetingForPhilippineTime()}, ${d.user.name}!`
                 : tab[0].toUpperCase() + tab.slice(1)}

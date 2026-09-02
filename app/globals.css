@@ -226,6 +226,13 @@ select {
   margin: 0 0 5px;
   letter-spacing: -0.03em;
 }
+.title h1.greeting {
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  font-size: clamp(30px, 3.1vw, 40px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+}
 .title span {
   color: #738097;
 }
@@ -844,6 +851,20 @@ td strong {
   }
   .title {
     gap: 14px;
+    align-items: flex-start;
+  }
+  .title > div { min-width: 0; }
+  .title h1.greeting {
+    max-width: 265px;
+    font-size: 25px;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+  .title h1.greeting + span {
+    display: block;
+    max-width: 245px;
+    font-size: 13px;
+    line-height: 1.4;
   }
   .title .primary {
     font-size: 0;
