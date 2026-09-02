@@ -4,6 +4,7 @@ import {
   ArrowDownToLine,
   ArrowUpRight,
   BadgePercent,
+  CalendarDays,
   Cat,
   CircleDollarSign,
   HandCoins,
@@ -23,6 +24,12 @@ const peso = (n: number) =>
     currency: "PHP",
     maximumFractionDigits: 0,
   }).format(n || 0);
+const formatDueDate = (date: string) =>
+  new Intl.DateTimeFormat("en-CA", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(`${date}T12:00:00`));
 async function api(body?: any) {
   const r = await fetch(
       "/api/app",
@@ -107,11 +114,21 @@ export default function App() {
     totalInterest = d.loans
       .filter((x: any) => x.type === "loan")
       .reduce((s: number, x: any) => s + (x.interest || 0), 0),
-    outstandingLoans = d.loans
-      .filter((x: any) => x.type === "loan" && x.status !== "paid")
+    openLoanRows = d.loans.filter(
+      (x: any) =>
+        x.type === "loan" && String(x.status).toLowerCase() !== "paid",
+    ),
+    outstandingLoans = openLoanRows
       .reduce(
         (s: number, x: any) => s + (x.principal || 0) + (x.interest || 0),
         0,
+      ),
+    myOpenLoans = openLoanRows
+      .filter((x: any) => x.memberId === d.user.id)
+      .sort((a: any, b: any) =>
+        String(a.dueDate || "9999-12-31").localeCompare(
+          String(b.dueDate || "9999-12-31"),
+        ),
       ),
     fund = tc - pl + py;
   const submit = async (e: any) => {
@@ -236,6 +253,43 @@ export default function App() {
                 tone="red"
               />
             </section>
+            {myOpenLoans.length > 0 && (
+              <section
+                className="my-loans-dashboard"
+                aria-label="Your outstanding loans"
+              >
+                <div className="my-loans-heading">
+                  <i>
+                    <CalendarDays aria-hidden="true" />
+                  </i>
+                  <div>
+                    <h2>Your outstanding loan</h2>
+                    <p>A friendly reminder for your current balance.</p>
+                  </div>
+                </div>
+                <div className="my-loans-list">
+                  {myOpenLoans.map((loan: any) => (
+                    <article key={loan.id}>
+                      <p>
+                        You have an outstanding loan amounting to{" "}
+                        <strong>
+                          {peso((loan.principal || 0) + (loan.interest || 0))}
+                        </strong>
+                        .{" "}
+                        {loan.dueDate ? (
+                          <>
+                            Pay on or before{" "}
+                            <strong>{formatDueDate(loan.dueDate)}</strong>. :)
+                          </>
+                        ) : (
+                          <>Please check with the treasurer for the due date. :)</>
+                        )}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
             <section className="grid">
               <div className="panel wide">
                 <Heading

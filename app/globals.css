@@ -375,6 +375,69 @@ select {
   background: #ffffff1f;
   color: #fff;
 }
+.my-loans-dashboard {
+  display: grid;
+  grid-template-columns: minmax(245px, 0.72fr) 1.28fr;
+  gap: 18px;
+  align-items: center;
+  margin: 0 0 20px;
+  padding: 19px 22px;
+  border: 1px solid #cdddfd;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 95% 5%, #c9dcff66, transparent 34%),
+    linear-gradient(135deg, #ffffff, #f3f7ff);
+  box-shadow: 0 10px 30px #2255d612;
+}
+.my-loans-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.my-loans-heading i {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #e8f0ff;
+  color: #2255d6;
+  box-shadow: inset 0 0 0 1px #cadbfd;
+}
+.my-loans-heading svg {
+  width: 21px;
+  height: 21px;
+}
+.my-loans-heading h2 {
+  margin: 0 0 3px;
+  font-size: 17px;
+}
+.my-loans-heading p {
+  margin: 0;
+  color: #78869b;
+  font-size: 12px;
+}
+.my-loans-list {
+  display: grid;
+  gap: 8px;
+}
+.my-loans-list article {
+  padding: 12px 15px;
+  border: 1px solid #dce7fb;
+  border-radius: 13px;
+  background: #ffffffd9;
+}
+.my-loans-list p {
+  margin: 0;
+  color: #52627a;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.my-loans-list strong {
+  color: #164eae;
+  font-weight: 850;
+}
 .grid {
   display: grid;
   grid-template-columns: 1.65fr 1fr;
@@ -810,6 +873,10 @@ td strong {
   .grid {
     grid-template-columns: 1fr;
   }
+  .my-loans-dashboard {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
   .memberrow {
     grid-template-columns: 42px 1fr;
   }
@@ -852,6 +919,32 @@ td strong {
   .stats {
     grid-template-columns: repeat(2, 1fr);
     padding: 6px;
+  }
+  .my-loans-dashboard {
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .my-loans-heading {
+    gap: 10px;
+  }
+  .my-loans-heading i {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+    border-radius: 11px;
+  }
+  .my-loans-heading h2 {
+    font-size: 15px;
+  }
+  .my-loans-heading p {
+    display: none;
+  }
+  .my-loans-list article {
+    padding: 11px 12px;
+  }
+  .my-loans-list p {
+    font-size: 13px;
   }
   .stat {
     padding: 15px 11px;
