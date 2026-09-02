@@ -784,6 +784,8 @@ td strong {
   }
   .login {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-content: start;
   }
   .login > section {
     padding: 24px 24px 48px;
@@ -793,7 +795,7 @@ td strong {
     margin: 32px 0 18px;
   }
   .login > form {
-    margin: -28px auto 24px;
+    margin: -42px auto 24px;
     z-index: 1;
     padding: 26px;
   }
@@ -903,7 +905,7 @@ td strong {
   }
   .login > form {
     width: min(390px, calc(100% - 28px));
-    margin: -24px auto 16px;
+    margin: -40px auto 16px;
     padding: 22px;
     border-radius: 20px;
   }
