@@ -786,15 +786,16 @@ td strong {
     grid-template-columns: 1fr;
   }
   .login > section {
-    padding: 28px 24px 38px;
-    min-height: 42vh;
+    padding: 24px 24px 48px;
+    min-height: 280px;
   }
   .login-copy {
-    margin: 60px 0 40px;
+    margin: 32px 0 18px;
   }
   .login > form {
-    margin: -18px auto 30px;
+    margin: -28px auto 24px;
     z-index: 1;
+    padding: 26px;
   }
   .title {
     align-items: center;
@@ -875,6 +876,49 @@ td strong {
     margin: 0;
   }
   .login-copy h1 {
-    font-size: 40px;
+    max-width: 330px;
+    margin: 8px 0 10px;
+    font-size: 31px;
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+  }
+  .login > section {
+    min-height: 225px;
+    padding: 18px 20px 42px;
+  }
+  .login-copy {
+    margin: 18px 0 8px;
+  }
+  .login-copy p {
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+  .login-copy span {
+    max-width: 340px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .trust {
+    display: none;
+  }
+  .login > form {
+    width: min(390px, calc(100% - 28px));
+    margin: -24px auto 16px;
+    padding: 22px;
+    border-radius: 20px;
+  }
+  .login form h2 {
+    font-size: 23px;
+  }
+  .login form > p {
+    margin: 6px 0 14px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .login form label {
+    margin-top: 10px;
+  }
+  .login form .primary {
+    margin: 16px 0 10px;
   }
 }

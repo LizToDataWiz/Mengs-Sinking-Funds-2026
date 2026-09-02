@@ -452,11 +452,7 @@ function Login({ onDone, error, setError }: any) {
         <Brand />
         <div className="login-copy">
           <p>MEMBER PORTAL</p>
-          <h1>
-            Every peso,
-            <br />
-            clear and accounted for.
-          </h1>
+          <h1>Welcome to Mengs Sinking Fund!</h1>
           <span>
             View contributions, loans, payments and each member’s share in one
             private place.
