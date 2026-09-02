@@ -132,6 +132,13 @@ export default function App() {
       setError(x.message);
     }
   };
+  const openTransaction = () => {
+    setForm({
+      date: new Date().toISOString().slice(0, 10),
+      type: "contribution",
+    });
+    setModal(true);
+  };
   return (
     <div className="shell">
       <header>
@@ -193,20 +200,6 @@ export default function App() {
                 : "All records are visible to registered members."}
             </span>
           </div>
-          {finance && tab !== "members" && tab !== "overview" && (
-            <button
-              className="primary"
-              onClick={() => {
-                setForm({
-                  date: new Date().toISOString().slice(0, 10),
-                  type: "contribution",
-                });
-                setModal(true);
-              }}
-            >
-              <Plus size={18} /> Add transaction
-            </button>
-          )}
         </div>
         {error && <div className="error">{error}</div>}
         {tab === "overview" && (
@@ -272,37 +265,63 @@ export default function App() {
           </>
         )}
         {tab === "contributions" && (
-          <div className="panel">
-            <Contributions
-              rows={d.contributions}
-              admin={admin}
-              refresh={setD}
-            />
-          </div>
+          <>
+            {finance && (
+              <div className="transaction-toolbar">
+                <button
+                  className="add-transaction-outline"
+                  type="button"
+                  onClick={openTransaction}
+                >
+                  <Plus /> Add transaction
+                </button>
+              </div>
+            )}
+            <div className="panel">
+              <Contributions
+                rows={d.contributions}
+                admin={admin}
+                refresh={setD}
+              />
+            </div>
+          </>
         )}
         {tab === "loans" && (
-          <div className="panel">
-            <Loans
-              rows={d.loans}
-              admin={admin}
-              finance={finance}
-              refresh={setD}
-              edit={(r: any) => {
-                setForm({
-                  id: r.id,
-                  memberId: r.memberId,
-                  date: r.date,
-                  type: r.type,
-                  principal: r.principal,
-                  term: r.termMonths,
-                  amount: r.amount,
-                  status: r.status,
-                  note: r.note || "",
-                });
-                setModal(true);
-              }}
-            />
-          </div>
+          <>
+            {finance && (
+              <div className="transaction-toolbar">
+                <button
+                  className="add-transaction-outline"
+                  type="button"
+                  onClick={openTransaction}
+                >
+                  <Plus /> Add transaction
+                </button>
+              </div>
+            )}
+            <div className="panel">
+              <Loans
+                rows={d.loans}
+                admin={admin}
+                finance={finance}
+                refresh={setD}
+                edit={(r: any) => {
+                  setForm({
+                    id: r.id,
+                    memberId: r.memberId,
+                    date: r.date,
+                    type: r.type,
+                    principal: r.principal,
+                    term: r.termMonths,
+                    amount: r.amount,
+                    status: r.status,
+                    note: r.note || "",
+                  });
+                  setModal(true);
+                }}
+              />
+            </div>
+          </>
         )}
         {tab === "members" && (
           <div className="panel">

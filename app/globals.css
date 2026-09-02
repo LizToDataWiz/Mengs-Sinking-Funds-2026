@@ -250,6 +250,40 @@ select {
   gap: 8px;
   cursor: pointer;
 }
+.transaction-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 13px;
+}
+.add-transaction-outline {
+  border: 2px solid #2460de;
+  border-radius: 13px;
+  padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: #2255d6;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px #2d68e514, 0 7px 22px #2255d62e;
+  transition: background 0.18s ease, box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+.add-transaction-outline svg {
+  width: 18px;
+  height: 18px;
+}
+.add-transaction-outline:hover {
+  background: #edf3ff;
+  box-shadow: 0 0 0 5px #2d68e51a, 0 9px 26px #2255d63b;
+  transform: translateY(-1px);
+}
+.add-transaction-outline:focus-visible {
+  outline: 3px solid #2255d640;
+  outline-offset: 3px;
+}
 .stats {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -877,6 +911,14 @@ td strong {
   .title .primary svg {
     margin: 0;
   }
+  .transaction-toolbar {
+    margin: -4px 2px 12px;
+  }
+  .add-transaction-outline {
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
   .login-copy h1 {
     max-width: 330px;
     margin: 8px 0 10px;
@@ -919,6 +961,9 @@ td strong {
   }
   .login form label {
     margin-top: 10px;
+  }
+  .login form input {
+    font-size: 16px;
   }
   .login form .primary {
     margin: 16px 0 10px;
