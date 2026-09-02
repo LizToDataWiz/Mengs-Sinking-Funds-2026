@@ -228,7 +228,7 @@ export default function App() {
             {d.user.name}
             <small>
               {admin
-                ? "Administrator"
+                ? "Admin"
                 : d.user.role === "treasurer"
                   ? "Treasurer"
                   : "Member"}

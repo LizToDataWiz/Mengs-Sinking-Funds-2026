@@ -999,7 +999,13 @@ td strong {
     display: none;
   }
   .account > span {
-    display: none;
+    display: flex;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+  .account small {
+    margin-top: 2px;
+    font-size: 10px;
   }
   .title {
     gap: 14px;
