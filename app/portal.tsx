@@ -52,6 +52,17 @@ export default function App() {
       .then(setD)
       .catch((e) => setError(e.message));
   }, []);
+  useEffect(() => {
+    if (!d?.user) return;
+
+    // Mobile Safari can keep the focused login field's zoom and scroll position
+    // after React swaps the sign-in screen for the portal.
+    (document.activeElement as HTMLElement | null)?.blur();
+    const resetView = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    resetView();
+    const frame = window.requestAnimationFrame(resetView);
+    return () => window.cancelAnimationFrame(frame);
+  }, [d?.user?.id]);
   const summary = useMemo(() => {
     if (!d?.members) return [];
     const tx = d.loans || [],
@@ -477,7 +488,7 @@ function Login({ onDone, error, setError }: any) {
           }
         }}
       >
-        <h2>Welcome back</h2>
+        <h2>Member sign in</h2>
         <p>Sign in with the email and PIN given by your admin.</p>
         {error && <div className="error">{error}</div>}
         <label>
