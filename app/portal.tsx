@@ -193,7 +193,7 @@ export default function App() {
                 : "All records are visible to registered members."}
             </span>
           </div>
-          {finance && tab !== "members" && (
+          {finance && tab !== "members" && tab !== "overview" && (
             <button
               className="primary"
               onClick={() => {
