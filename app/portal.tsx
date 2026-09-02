@@ -62,9 +62,9 @@ export default function App() {
   useLayoutEffect(() => {
     if (!d?.user) return;
 
-    // Mobile Safari can keep the focused login field's zoom and scroll position
-    // after React swaps the sign-in screen for the portal. Reset through the
-    // keyboard-closing animation so Safari cannot restore the old position.
+    // Mobile browsers can keep the focused login field's zoom and scroll
+    // position after React swaps the sign-in screen for the portal. Reset
+    // through the keyboard-closing animation on both iOS and Android.
     (document.activeElement as HTMLElement | null)?.blur();
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
@@ -90,16 +90,21 @@ export default function App() {
     );
     const viewport = window.visualViewport;
     viewport?.addEventListener("resize", resetView);
-    const stopWatching = window.setTimeout(
-      () => viewport?.removeEventListener("resize", resetView),
-      1000,
-    );
+    window.addEventListener("resize", resetView);
+    window.addEventListener("orientationchange", resetView);
+    const stopWatching = window.setTimeout(() => {
+      viewport?.removeEventListener("resize", resetView);
+      window.removeEventListener("resize", resetView);
+      window.removeEventListener("orientationchange", resetView);
+    }, 1000);
     return () => {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
       timers.forEach(window.clearTimeout);
       window.clearTimeout(stopWatching);
       viewport?.removeEventListener("resize", resetView);
+      window.removeEventListener("resize", resetView);
+      window.removeEventListener("orientationchange", resetView);
     };
   }, [d?.user?.id]);
   const summary = useMemo(() => {
