@@ -1,5 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Comic_Neue } from "next/font/google";
 import "./globals.css";
+
+const comicNeue = Comic_Neue({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-comic",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Mengs Sinking Fund",
@@ -10,6 +18,11 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className={`${comicNeue.variable} antialiased`}>{children}</body>
     </html>
   );
 }
