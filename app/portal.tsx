@@ -560,7 +560,6 @@ function Contributions({ rows, admin, refresh }: any) {
             <th>Date</th>
             <th>Member</th>
             <th>Amount</th>
-            <th>Note</th>
             {admin && <th />}
           </tr>
         </thead>
@@ -578,7 +577,6 @@ function Contributions({ rows, admin, refresh }: any) {
                   peso(r.amount)
                 )}
               </td>
-              <td>{r.note || "—"}</td>
               {admin && (
                 <td>
                   <button
