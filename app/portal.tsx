@@ -78,6 +78,11 @@ export default function App() {
         left: 0,
         behavior: "auto",
       });
+      document.getElementById("portal-top")?.scrollIntoView({
+        block: "start",
+        inline: "nearest",
+        behavior: "auto",
+      });
     };
     resetView();
     let secondFrame = 0;
@@ -194,7 +199,7 @@ export default function App() {
     setModal(true);
   };
   return (
-    <div className="shell">
+    <div className="shell" id="portal-top">
       <header>
         <Brand />
         <nav>
@@ -593,8 +598,18 @@ function Login({ onDone, error, setError }: any) {
           e.preventDefault();
           setBusy(true);
           setError("");
+          // Dismiss the mobile keyboard and clear the login form's scroll
+          // position before swapping in the much shorter portal header.
+          (document.activeElement as HTMLElement | null)?.blur();
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
           try {
-            onDone(await api({ action: "login", ...f }));
+            const nextState = await api({ action: "login", ...f });
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            onDone(nextState);
           } catch (x: any) {
             setError(x.message);
           } finally {
