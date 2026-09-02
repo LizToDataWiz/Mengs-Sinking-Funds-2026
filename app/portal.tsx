@@ -23,6 +23,18 @@ const peso = (n: number) =>
     currency: "PHP",
     maximumFractionDigits: 0,
   }).format(n || 0);
+function greetingForPhilippineTime() {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Manila",
+    }).format(new Date()),
+  );
+  if (hour >= 5 && hour < 12) return "Maayong Buntag";
+  if (hour >= 12 && hour < 18) return "Maayong Hapon";
+  return "Maayong Gabii";
+}
 async function api(body?: any) {
   const r = await fetch(
       "/api/app",
@@ -173,7 +185,7 @@ export default function App() {
             <p>2026 FUND</p>
             <h1>
               {tab === "overview"
-                ? `Hi, ${d.user.name}`
+                ? `${greetingForPhilippineTime()}, ${d.user.name}!`
                 : tab[0].toUpperCase() + tab.slice(1)}
             </h1>
             <span>
