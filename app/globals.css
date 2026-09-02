@@ -231,7 +231,7 @@ select {
 }
 .title h1.greeting {
   font-family: var(--font-comic), "Comic Sans MS", "Comic Sans", sans-serif;
-  font-size: clamp(30px, 3.1vw, 40px);
+  font-size: clamp(36px, 3.72vw, 48px);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.04em;
@@ -1008,7 +1008,7 @@ td strong {
   .title > div { min-width: 0; }
   .title h1.greeting {
     max-width: 265px;
-    font-size: 25px;
+    font-size: 30px;
     line-height: 1.1;
     letter-spacing: -0.035em;
   }
