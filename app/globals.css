@@ -236,6 +236,39 @@ select {
   line-height: 1.12;
   letter-spacing: -0.04em;
 }
+.typing-greeting {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 1.12em;
+}
+.title h1.greeting .typing-greeting,
+.title h1.greeting .typing-greeting > span {
+  color: inherit;
+}
+.typing-caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.82em;
+  margin-left: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: typing-caret-blink 0.7s step-end infinite;
+}
+@keyframes typing-caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .typing-caret {
+    animation: none;
+  }
+}
 .title span {
   color: #738097;
 }

@@ -49,6 +49,7 @@ export default function App() {
   const [d, setD] = useState<any>(null),
     [error, setError] = useState(""),
     [tab, setTab] = useState("overview"),
+    [greetingPlayed, setGreetingPlayed] = useState(false),
     [modal, setModal] = useState(false),
     [form, setForm] = useState<any>({
       date: new Date().toISOString().slice(0, 10),
@@ -250,7 +251,11 @@ export default function App() {
             <p>2026 FUND</p>
             <h1 className={tab === "overview" ? "greeting" : undefined}>
               {tab === "overview"
-                ? `Hello, ${d.user.name}!`
+                ? <TypingGreeting
+                    name={d.user.name}
+                    animate={!greetingPlayed}
+                    onDone={() => setGreetingPlayed(true)}
+                  />
                 : tab[0].toUpperCase() + tab.slice(1)}
             </h1>
             <span>
@@ -572,6 +577,60 @@ function Stat({ icon, label, value, tone }: any) {
         <strong>{value}</strong>
       </div>
     </article>
+  );
+}
+function TypingGreeting({
+  name,
+  animate,
+  onDone,
+}: {
+  name: string;
+  animate: boolean;
+  onDone: () => void;
+}) {
+  const message = `Hello, ${name}!`;
+  const [visible, setVisible] = useState(animate ? "" : message);
+  const [typing, setTyping] = useState(animate);
+
+  useEffect(() => {
+    if (!animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(message);
+      setTyping(false);
+      onDone();
+      return;
+    }
+
+    let index = 0;
+    let typeTimer = 0;
+    let finishTimer = 0;
+    setVisible("");
+    setTyping(true);
+
+    const typeNextCharacter = () => {
+      index += 1;
+      setVisible(message.slice(0, index));
+      if (index < message.length) {
+        typeTimer = window.setTimeout(typeNextCharacter, 65);
+      } else {
+        finishTimer = window.setTimeout(() => {
+          setTyping(false);
+          onDone();
+        }, 450);
+      }
+    };
+
+    typeTimer = window.setTimeout(typeNextCharacter, 180);
+    return () => {
+      window.clearTimeout(typeTimer);
+      window.clearTimeout(finishTimer);
+    };
+  }, [animate, message]);
+
+  return (
+    <span className="typing-greeting" aria-label={message}>
+      <span aria-hidden="true">{visible}</span>
+      {typing && <i className="typing-caret" aria-hidden="true" />}
+    </span>
   );
 }
 function Login({ onDone, error, setError }: any) {
