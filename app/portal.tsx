@@ -653,7 +653,10 @@ function Login({ onDone, error, setError }: any) {
 function AppCredit({ compact = false }: { compact?: boolean }) {
   return (
     <footer className={`app-credit${compact ? " compact" : ""}`}>
-      Powered by <strong>L3R Digital Studio</strong>
+      <span>© 2026</span>
+      <strong>L3R Digital Studio</strong>
+      <span aria-hidden="true">·</span>
+      <span>All rights reserved</span>
       <span aria-hidden="true">·</span>
       <span>v1.0</span>
     </footer>
