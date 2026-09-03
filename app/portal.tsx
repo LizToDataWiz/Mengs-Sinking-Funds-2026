@@ -63,10 +63,12 @@ export default function App() {
   useLayoutEffect(() => {
     if (!d?.user) return;
 
-    // Mobile browsers can keep the focused login field's zoom and scroll
-    // position after React swaps the sign-in screen for the portal. Reset
-    // through the keyboard-closing animation on both iOS and Android.
+    // Keep authenticated page loads at the top while mobile browser chrome and
+    // the software keyboard finish resizing the viewport.
     (document.activeElement as HTMLElement | null)?.blur();
+    const hasSignInMarker = new URLSearchParams(window.location.search).has(
+      "signed-in",
+    );
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
@@ -102,6 +104,9 @@ export default function App() {
       viewport?.removeEventListener("resize", resetView);
       window.removeEventListener("resize", resetView);
       window.removeEventListener("orientationchange", resetView);
+      if (hasSignInMarker) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
     }, 1000);
     return () => {
       window.cancelAnimationFrame(firstFrame);
@@ -144,7 +149,7 @@ export default function App() {
     });
   }, [d]);
   if (!d) return <main className="loading">Opening your fund…</main>;
-  if (!d.user) return <Login onDone={setD} error={error} setError={setError} />;
+  if (!d.user) return <Login error={error} setError={setError} />;
   const admin = d.user.role === "admin",
     finance = admin || d.user.role === "treasurer",
     tc = summary.reduce((s: number, m: any) => s + Number(m.contributions), 0),
@@ -633,7 +638,7 @@ function TypingGreeting({
     </span>
   );
 }
-function Login({ onDone, error, setError }: any) {
+function Login({ error, setError }: any) {
   const [f, setF] = useState({ email: "", pin: "" }),
     [busy, setBusy] = useState(false);
   return (
@@ -665,11 +670,10 @@ function Login({ onDone, error, setError }: any) {
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
           try {
-            const nextState = await api({ action: "login", ...f });
-            window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-            onDone(nextState);
+            await api({ action: "login", ...f });
+            // A fresh URL prevents iOS and in-app browsers from restoring the
+            // login form's scroll position onto the authenticated dashboard.
+            window.location.replace(`/?signed-in=${Date.now()}`);
           } catch (x: any) {
             setError(x.message);
           } finally {
