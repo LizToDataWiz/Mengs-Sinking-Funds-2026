@@ -428,6 +428,7 @@ export default function App() {
             <Members rows={d.members} admin={admin} refresh={setD} />
           </div>
         )}
+        <AppCredit />
       </main>
       {modal && (
         <div className="backdrop" onMouseDown={() => setModal(false)}>
@@ -644,8 +645,18 @@ function Login({ onDone, error, setError }: any) {
           {busy ? "Signing in…" : "Sign in"}
         </button>
         <small>Your records are view-only unless you are the admin.</small>
+        <AppCredit compact />
       </form>
     </main>
+  );
+}
+function AppCredit({ compact = false }: { compact?: boolean }) {
+  return (
+    <footer className={`app-credit${compact ? " compact" : ""}`}>
+      Powered by <strong>L3R Digital Studio</strong>
+      <span aria-hidden="true">·</span>
+      <span>v1.0</span>
+    </footer>
   );
 }
 function Summary({ rows }: any) {

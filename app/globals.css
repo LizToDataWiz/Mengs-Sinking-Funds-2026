@@ -595,6 +595,25 @@ td strong {
   border-radius: 10px;
   margin: 10px 0;
 }
+.app-credit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 28px;
+  color: #8995a7;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+.app-credit strong {
+  color: #65758d;
+  font-weight: 800;
+}
+.app-credit.compact {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #edf0f5;
+}
 .danger {
   border: 0;
   background: none;
@@ -1038,6 +1057,13 @@ td strong {
     padding: 9px 13px;
     border-radius: 12px;
     font-size: 13px;
+  }
+  .app-credit {
+    margin-top: 22px;
+    font-size: 10px;
+  }
+  .app-credit.compact {
+    margin-top: 16px;
   }
   .login-copy h1 {
     max-width: 330px;
