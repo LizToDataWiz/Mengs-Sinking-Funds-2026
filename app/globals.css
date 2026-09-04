@@ -656,6 +656,32 @@ select {
   color: #728096;
   font-weight: 700;
 }
+.short-label {
+  display: none;
+}
+.loan-balances-table {
+  table-layout: fixed;
+}
+.loan-balances-table th:nth-child(1) {
+  width: 24%;
+}
+.loan-balances-table th:nth-child(2) {
+  width: 17%;
+}
+.loan-balances-table th:nth-child(3) {
+  width: 34%;
+}
+.loan-balances-table th:nth-child(4) {
+  width: 25%;
+}
+.loan-balances-table th:nth-child(2),
+.loan-balances-table td:nth-child(2) {
+  text-align: center;
+}
+.loan-balances-table th:last-child,
+.loan-balances-table td:last-child {
+  text-align: right;
+}
 .past-due-row {
   background: #fff8f8;
 }
@@ -1144,6 +1170,52 @@ td strong {
   }
   .loan-balances-heading > strong {
     font-size: 17px;
+  }
+  .loan-balances .tablewrap {
+    overflow-x: hidden;
+  }
+  .loan-balances-table th,
+  .loan-balances-table td {
+    padding: 11px 7px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .loan-balances-table th {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+  .loan-balances-table td {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .loan-balances-table th:nth-child(1) {
+    width: 25%;
+  }
+  .loan-balances-table th:nth-child(2) {
+    width: 12%;
+  }
+  .loan-balances-table th:nth-child(3) {
+    width: 37%;
+  }
+  .loan-balances-table th:nth-child(4) {
+    width: 26%;
+  }
+  .loan-balances-table td:first-child b {
+    font-size: 13px;
+  }
+  .loan-balances-table td:last-child strong {
+    font-size: 12px;
+  }
+  .full-label {
+    display: none;
+  }
+  .short-label {
+    display: inline;
+  }
+  .due-date-with-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
   .membermanager .panelhead {
     align-items: flex-start;

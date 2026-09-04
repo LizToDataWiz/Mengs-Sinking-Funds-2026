@@ -991,13 +991,22 @@ function Loans({ rows, members, admin, finance, refresh, edit }: any) {
             </strong>
           </div>
           <div className="tablewrap">
-            <table>
+            <table className="loan-balances-table">
               <thead>
                 <tr>
                   <th>Member</th>
-                  <th>Open loans</th>
-                  <th>Next due date</th>
-                  <th>Loan balance</th>
+                  <th>
+                    <span className="full-label">Open loans</span>
+                    <span className="short-label">Open</span>
+                  </th>
+                  <th>
+                    <span className="full-label">Next due date</span>
+                    <span className="short-label">Due date</span>
+                  </th>
+                  <th>
+                    <span className="full-label">Loan balance</span>
+                    <span className="short-label">Balance</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
