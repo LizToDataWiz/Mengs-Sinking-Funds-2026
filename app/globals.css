@@ -585,11 +585,17 @@ select {
 .table-filters {
   display: flex;
   gap: 5px;
+  overflow-x: auto;
   padding: 14px 16px;
   border-bottom: 1px solid #e8edf5;
   background: #fbfcfe;
+  scrollbar-width: none;
+}
+.table-filters::-webkit-scrollbar {
+  display: none;
 }
 .table-filters button {
+  flex: 0 0 auto;
   border: 1px solid transparent;
   border-radius: 10px;
   padding: 8px 14px;
@@ -610,6 +616,45 @@ select {
 .table-filters button:focus-visible {
   outline: 3px solid #2255d633;
   outline-offset: 2px;
+}
+.loan-balances-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #e8edf5;
+  background: linear-gradient(135deg, #ffffff, #f3f7ff);
+}
+.loan-balances-heading h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.loan-balances-heading p {
+  margin: 0;
+  color: #7b889c;
+  font-size: 12px;
+}
+.loan-balances-heading > strong {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #1858c9;
+  font-size: 22px;
+  line-height: 1.15;
+}
+.loan-balances-heading small {
+  margin-top: 3px;
+  color: #8591a3;
+  font-size: 10px;
+  font-weight: 700;
+}
+.balance-due {
+  color: #1858c9;
+}
+.balance-clear {
+  color: #728096;
+  font-weight: 700;
 }
 table {
   width: 100%;
@@ -1060,6 +1105,27 @@ td strong {
   }
 }
 @media (max-width: 560px) {
+  .table-filters {
+    padding: 11px 10px;
+    gap: 3px;
+  }
+  .table-filters button {
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+  .loan-balances-heading {
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .loan-balances-heading h2 {
+    font-size: 15px;
+  }
+  .loan-balances-heading p {
+    max-width: 175px;
+  }
+  .loan-balances-heading > strong {
+    font-size: 17px;
+  }
   .membermanager .panelhead {
     align-items: flex-start;
     gap: 14px;

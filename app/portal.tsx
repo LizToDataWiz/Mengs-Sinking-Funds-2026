@@ -458,6 +458,7 @@ export default function App() {
             <div className="panel">
               <Loans
                 rows={d.loans}
+                members={d.members}
                 admin={admin}
                 finance={finance}
                 refresh={setD}
@@ -896,8 +897,45 @@ function Contributions({ rows, admin, refresh }: any) {
     </div>
   );
 }
-function Loans({ rows, admin, finance, refresh, edit }: any) {
+function Loans({ rows, members, admin, finance, refresh, edit }: any) {
   const [filter, setFilter] = useState("all");
+  const loanBalances = useMemo(() => {
+    const openLoans = rows.filter(
+      (row: any) =>
+        row.type === "loan" &&
+        String(row.status).toLowerCase() !== "paid",
+    );
+
+    return members
+      .map((member: any) => {
+        const memberLoans = openLoans
+          .filter((row: any) => row.memberId === member.id)
+          .sort((a: any, b: any) =>
+            String(a.dueDate || "9999-12-31").localeCompare(
+              String(b.dueDate || "9999-12-31"),
+            ),
+          );
+        return {
+          id: member.id,
+          name: member.name,
+          openLoans: memberLoans.length,
+          nextDueDate: memberLoans[0]?.dueDate || null,
+          balance: memberLoans.reduce(
+            (sum: number, loan: any) =>
+              sum +
+              Number(
+                loan.amount ??
+                  Number(loan.principal || 0) + Number(loan.interest || 0),
+              ),
+            0,
+          ),
+        };
+      })
+      .sort(
+        (a: any, b: any) =>
+          b.balance - a.balance || a.name.localeCompare(b.name),
+      );
+  }, [members, rows]);
   const filteredRows =
     filter === "all" ? rows : rows.filter((r: any) => r.type === filter);
   const visibleRows = [...filteredRows].sort((a: any, b: any) => {
@@ -913,6 +951,7 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
           ["all", "All"],
           ["loan", "Loans"],
           ["payment", "Payments"],
+          ...(finance ? [["balance", "Loan balances"]] : []),
         ].map(([value, label]) => (
           <button
             key={value}
@@ -925,6 +964,61 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
           </button>
         ))}
       </div>
+      {filter === "balance" && finance ? (
+        <div className="loan-balances" aria-label="Outstanding loan balances">
+          <div className="loan-balances-heading">
+            <div>
+              <h2>Outstanding loan balances</h2>
+              <p>Unpaid principal and interest for each member.</p>
+            </div>
+            <strong>
+              {peso(
+                loanBalances.reduce(
+                  (sum: number, member: any) => sum + member.balance,
+                  0,
+                ),
+              )}
+              <small>Total outstanding</small>
+            </strong>
+          </div>
+          <div className="tablewrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Member</th>
+                  <th>Open loans</th>
+                  <th>Next due date</th>
+                  <th>Loan balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanBalances.map((member: any) => (
+                  <tr key={member.id}>
+                    <td>
+                      <b>{member.name}</b>
+                    </td>
+                    <td>{member.openLoans}</td>
+                    <td>
+                      {member.nextDueDate
+                        ? formatDueDate(member.nextDueDate)
+                        : "—"}
+                    </td>
+                    <td>
+                      <strong
+                        className={
+                          member.balance ? "balance-due" : "balance-clear"
+                        }
+                      >
+                        {peso(member.balance)}
+                      </strong>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
       <div className="tablewrap">
         <table>
           <thead>
@@ -1004,6 +1098,7 @@ function Loans({ rows, admin, finance, refresh, edit }: any) {
           </tbody>
         </table>
       </div>
+      )}
     </>
   );
 }
