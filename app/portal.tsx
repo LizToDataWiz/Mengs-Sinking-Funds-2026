@@ -13,10 +13,12 @@ import {
   LogOut,
   Pencil,
   Plus,
+  RefreshCw,
   ReceiptText,
   ShieldCheck,
   Trash2,
   Users,
+  WifiOff,
 } from "lucide-react";
 const peso = (n: number) =>
   new Intl.NumberFormat("en-PH", {
@@ -31,23 +33,40 @@ const formatDueDate = (date: string) =>
     year: "numeric",
   }).format(new Date(`${date}T12:00:00`));
 async function api(body?: any) {
-  const r = await fetch(
-      "/api/app",
-      body
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 10000);
+  try {
+    const r = await fetch("/api/app", {
+      ...(body
         ? {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(body),
           }
-        : undefined,
-    ),
-    j = await r.json();
-  if (!r.ok) throw new Error(j.error || "Something went wrong");
-  return j;
+        : {}),
+      cache: "no-store",
+      credentials: "same-origin",
+      signal: controller.signal,
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || "Something went wrong");
+    return j;
+  } catch (error: any) {
+    if (error?.name === "AbortError") {
+      throw new Error("The connection took too long. Please try again.");
+    }
+    if (error instanceof TypeError) {
+      throw new Error("We couldn’t connect. Check your internet connection.");
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 }
 export default function App() {
   const [d, setD] = useState<any>(null),
     [error, setError] = useState(""),
+    [reloadKey, setReloadKey] = useState(0),
     [tab, setTab] = useState("overview"),
     [greetingPlayed, setGreetingPlayed] = useState(false),
     [modal, setModal] = useState(false),
@@ -56,10 +75,31 @@ export default function App() {
       type: "contribution",
     });
   useEffect(() => {
-    api()
-      .then(setD)
-      .catch((e) => setError(e.message));
-  }, []);
+    let cancelled = false;
+    setError("");
+    setD(null);
+
+    const load = async () => {
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
+          const state = await api();
+          if (!cancelled) setD(state);
+          return;
+        } catch (loadError: any) {
+          if (attempt === 0) {
+            await new Promise((resolve) => window.setTimeout(resolve, 700));
+          } else if (!cancelled) {
+            setError(loadError.message || "The fund could not be opened.");
+          }
+        }
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
   useLayoutEffect(() => {
     if (!d?.user) return;
 
@@ -148,7 +188,13 @@ export default function App() {
       };
     });
   }, [d]);
-  if (!d) return <main className="loading">Opening your fund…</main>;
+  if (!d)
+    return (
+      <LoadingScreen
+        error={error}
+        onRetry={() => setReloadKey((value) => value + 1)}
+      />
+    );
   if (!d.user) return <Login error={error} setError={setError} />;
   const admin = d.user.role === "admin",
     finance = admin || d.user.role === "treasurer",
@@ -636,6 +682,44 @@ function TypingGreeting({
       <span aria-hidden="true">{visible}</span>
       {typing && <i className="typing-caret" aria-hidden="true" />}
     </span>
+  );
+}
+function LoadingScreen({
+  error,
+  onRetry,
+}: {
+  error: string;
+  onRetry: () => void;
+}) {
+  return (
+    <main className="loading-screen">
+      <div className="loading-card" role={error ? "alert" : "status"}>
+        <Brand />
+        {error ? (
+          <>
+            <i className="connection-icon">
+              <WifiOff aria-hidden="true" />
+            </i>
+            <h1>We couldn’t open the fund</h1>
+            <p>{error}</p>
+            <button className="primary" type="button" onClick={onRetry}>
+              <RefreshCw aria-hidden="true" />
+              Try again
+            </button>
+            <small>
+              If you opened the link in Messenger, you can also try opening it
+              in Safari or Chrome.
+            </small>
+          </>
+        ) : (
+          <>
+            <span className="loading-spinner" aria-hidden="true" />
+            <h1>Opening your fund…</h1>
+            <p>This may take a moment on a mobile connection.</p>
+          </>
+        )}
+      </div>
+    </main>
   );
 }
 function Login({ error, setError }: any) {
