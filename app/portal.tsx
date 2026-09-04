@@ -900,6 +900,7 @@ function Contributions({ rows, admin, refresh }: any) {
 function Loans({ rows, members, admin, finance, refresh, edit }: any) {
   const [filter, setFilter] = useState("all");
   const loanBalances = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
     const openLoans = rows.filter(
       (row: any) =>
         row.type === "loan" &&
@@ -920,6 +921,8 @@ function Loans({ rows, members, admin, finance, refresh, edit }: any) {
           name: member.name,
           openLoans: memberLoans.length,
           nextDueDate: memberLoans[0]?.dueDate || null,
+          isPastDue:
+            Boolean(memberLoans[0]?.dueDate) && memberLoans[0].dueDate < today,
           balance: memberLoans.reduce(
             (sum: number, loan: any) =>
               sum +
@@ -931,10 +934,16 @@ function Loans({ rows, members, admin, finance, refresh, edit }: any) {
           ),
         };
       })
-      .sort(
-        (a: any, b: any) =>
-          b.balance - a.balance || a.name.localeCompare(b.name),
-      );
+      .sort((a: any, b: any) => {
+        if (Boolean(a.openLoans) !== Boolean(b.openLoans)) {
+          return a.openLoans ? -1 : 1;
+        }
+        return (
+          String(a.nextDueDate || "9999-12-31").localeCompare(
+            String(b.nextDueDate || "9999-12-31"),
+          ) || a.name.localeCompare(b.name)
+        );
+      });
   }, [members, rows]);
   const filteredRows =
     filter === "all" ? rows : rows.filter((r: any) => r.type === filter);
@@ -993,14 +1002,22 @@ function Loans({ rows, members, admin, finance, refresh, edit }: any) {
               </thead>
               <tbody>
                 {loanBalances.map((member: any) => (
-                  <tr key={member.id}>
+                  <tr
+                    key={member.id}
+                    className={member.isPastDue ? "past-due-row" : undefined}
+                  >
                     <td>
                       <b>{member.name}</b>
                     </td>
                     <td>{member.openLoans}</td>
                     <td>
                       {member.nextDueDate
-                        ? formatDueDate(member.nextDueDate)
+                        ? <span className="due-date-with-status">
+                            {formatDueDate(member.nextDueDate)}
+                            {member.isPastDue && (
+                              <small className="past-due-badge">Past due</small>
+                            )}
+                          </span>
                         : "—"}
                     </td>
                     <td>

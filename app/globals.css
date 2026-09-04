@@ -656,6 +656,25 @@ select {
   color: #728096;
   font-weight: 700;
 }
+.past-due-row {
+  background: #fff8f8;
+}
+.due-date-with-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.past-due-badge {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #ffe7e9;
+  color: #c53242;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
 table {
   width: 100%;
   border-collapse: collapse;
